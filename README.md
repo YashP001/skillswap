@@ -148,3 +148,7 @@ sudo docker-compose down --rmi all
 ```
 
 Now you can run the website on `http://localhost:5173`
+## Project Note
+This project is based on an open-source implementation available on GitHub and has been modified, configured, deployed, and extended by me for learning and academic purposes.
+
+Additional work includes environment configuration, Docker-based setup, email integration, authentication flow handling, and preparation for mobile (APK) deployment.
