@@ -565,6 +565,7 @@ export const discoverUsers = asyncHandler(async (req, res) => {
   const mlUsers = [];
   const otherUsers = [];
 
+
   // randomly suffle the users array
 
   users.sort(() => Math.random() - 0.5);
@@ -592,6 +593,7 @@ export const discoverUsers = asyncHandler(async (req, res) => {
     );
 });
 
+
 export const sendScheduleMeet = asyncHandler(async (req, res) => {
   console.log("******** Inside sendScheduleMeet Function *******");
 
@@ -600,17 +602,67 @@ export const sendScheduleMeet = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Please provide all the details");
   }
 
-  const user = await User.findOne({ username: username });
-
-  if (!user) {
+  // receiver (other user)
+  const receiver = await User.findOne({ username });
+  if (!receiver) {
     throw new ApiError(404, "User not found");
   }
 
-  const to = user.email;
-  const subject = "Request for Scheduling a meeting";
-  const message = `${req.user.name} has requested for a meet at ${time} time on ${date} date. Please respond to the request.`;
+  // sender (logged-in user)
+  const sender = req.user;
 
-  await sendMail(to, subject, message);
+  // real Google Meet link
+  const meetLink = "https://meet.google.com/gky-nbwp-zih";
 
-  return res.status(200).json(new ApiResponse(200, null, "Email sent successfully"));
+  const subject = "SkillSwap – Meeting Scheduled 🎉";
+
+  const message = `
+Hello,
+
+
+A SkillSwap meeting has been scheduled successfully!
+
+
+👤 Participants:
+
+• ${sender.name}
+
+• ${receiver.name}
+
+
+📅 Date:
+${date}
+
+
+⏰ Time:
+${time}
+
+
+ Google Meet Link:
+
+${meetLink}
+
+
+Please join the meeting on time.
+
+
+Happy Learning 
+
+
+SkillSwap Team
+`;
+
+  // send email to receiver
+  await sendMail(receiver.email, subject, message);
+
+  // send email to sender
+  await sendMail(sender.email, subject, message);
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      { meetLink },
+      "Meeting link sent successfully to both users"
+    )
+  );
 });
