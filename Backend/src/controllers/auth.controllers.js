@@ -10,6 +10,8 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 dotenv.config();
 
 const FRONTEND_URL = "https://skillswap-rosy.vercel.app";
+const MOBILE_SUCCESS = "skillswap://login-success";
+const MOBILE_REGISTER = "skillswap://register";
 
 /* ---------------- GOOGLE STRATEGY ---------------- */
 
@@ -43,6 +45,7 @@ export const handleGoogleLoginCallback = asyncHandler(async (req, res) => {
   console.log("\n******** Inside handleGoogleLoginCallback ********");
 
   const email = req.user._json.email;
+  const isMobile = req.headers["user-agent"]?.includes("Android");
 
   /* ---------- REGISTERED USER ---------- */
   const existingUser = await User.findOne({ email });
@@ -58,7 +61,7 @@ export const handleGoogleLoginCallback = asyncHandler(async (req, res) => {
       sameSite: "none",
     });
 
-    return res.redirect(`${FRONTEND_URL}/discover`);
+    return res.redirect(isMobile ? MOBILE_SUCCESS : `${FRONTEND_URL}/discover`);
   }
 
   /* ---------- UNREGISTERED USER ---------- */
@@ -82,7 +85,7 @@ export const handleGoogleLoginCallback = asyncHandler(async (req, res) => {
     sameSite: "none",
   });
 
-  return res.redirect(`${FRONTEND_URL}/register`);
+  return res.redirect(isMobile ? MOBILE_REGISTER : `${FRONTEND_URL}/register`);
 });
 
 /* ---------------- LOGOUT ---------------- */
