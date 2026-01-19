@@ -4,12 +4,11 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true, // ✅ REQUIRED for Gmail on Render
+  host: "smtp-relay.brevo.com",
+  port: 587,
+  secure: false, // TLS
   auth: {
-    user: process.env.EMAIL_ID,
+    user: process.env.EMAIL_ID, // must be 'apikey'
     pass: process.env.APP_PASSWORD,
   },
 });
@@ -17,17 +16,15 @@ const transporter = nodemailer.createTransport({
 export const sendMail = async (to, subject, text) => {
   try {
     const info = await transporter.sendMail({
-      from: `"SkillSwap Team" <${process.env.EMAIL_ID}>`,
+      from: "SkillSwap <noreply@skillswap.app>",
       to,
       subject,
       text,
     });
 
-    console.log("✅ Mail sent successfully");
-    console.log("📩 Message ID:", info.messageId);
+    console.log("✅ Mail sent successfully:", info.messageId);
   } catch (error) {
-    console.error("❌ Mail sending failed");
-    console.error(error);
-    throw error; // important so frontend doesn’t fake success
+    console.error("❌ Mail sending failed:", error);
+    throw error;
   }
 };
