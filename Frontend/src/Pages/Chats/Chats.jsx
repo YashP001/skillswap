@@ -75,8 +75,8 @@ const Chats = () => {
       const tempUser = JSON.parse(localStorage.getItem("userInfo"));
       const { data } = await axios.get(
         "https://skillswap-ab0o.onrender.com/chat",
-       { withCredentials: true }
-       );
+        { withCredentials: true }
+      );
 
       // console.log("Chats", data.data);
       toast.success(data.message);
@@ -118,9 +118,9 @@ const Chats = () => {
     try {
       setChatMessageLoading(true);
       const { data } = await axios.get(
-      `https://skillswap-ab0o.onrender.com/message/getMessages/${chatId}`,
-      { withCredentials: true }
-     );
+        `https://skillswap-ab0o.onrender.com/message/getMessages/${chatId}`,
+        { withCredentials: true }
+      );
 
       setChatMessages(data.data);
       // console.log("Chat Messages:", data.data);
@@ -610,7 +610,12 @@ const Chats = () => {
 
                   scheduleForm.username = selectedChat.username;
                   try {
-                    const { data } = await axios.post("/user/sendScheduleMeet", scheduleForm);
+                    const { data } = await axios.post(
+                      "https://skillswap-ab0o.onrender.com/user/sendScheduleMeet",
+                      scheduleForm,
+                      { withCredentials: true }
+                    );
+
                     toast.success("Request mail has been sent successfully!");
                     setScheduleForm({
                       date: "",
@@ -623,7 +628,11 @@ const Chats = () => {
                       if (error.response.data.message === "Please Login") {
                         localStorage.removeItem("userInfo");
                         setUser(null);
-                        await axios.get("/auth/logout");
+                        await axios.get(
+                          "https://skillswap-ab0o.onrender.com/auth/logout",
+                          { withCredentials: true }
+                        );
+
                         navigate("/login");
                       }
                     } else {
