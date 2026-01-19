@@ -1,30 +1,33 @@
-import nodemailer from "nodemailer";
+import axios from "axios";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-const transporter = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com",
-  port: 587,
-  secure: false, // TLS
-  auth: {
-    user: process.env.EMAIL_ID, // must be 'apikey'
-    pass: process.env.APP_PASSWORD,
-  },
-});
-
 export const sendMail = async (to, subject, text) => {
   try {
-    const info = await transporter.sendMail({
-      from: "SkillSwap <noreply@skillswap.app>",
-      to,
-      subject,
-      text,
-    });
+    const response = await axios.post(
+      "https://api.brevo.com/v3/smtp/email",
+      {
+        sender: {
+          name: "SkillSwap",
+          email: process.env.SENDER_EMAIL,
+        },
+        to: [{ email: to }],
+        subject,
+        textContent: text,
+      },
+      {
+        headers: {
+          "api-key": process.env.BREVO_API_KEY,
+          "Content-Type": "application/json",
+        },
+        timeout: 10000,
+      }
+    );
 
-    console.log("✅ Mail sent successfully:", info.messageId);
+    console.log("✅ Mail sent via Brevo API:", response.data.messageId);
   } catch (error) {
-    console.error("❌ Mail sending failed:", error);
+    console.error("❌ Brevo API mail failed:", error.response?.data || error.message);
     throw error;
   }
 };
