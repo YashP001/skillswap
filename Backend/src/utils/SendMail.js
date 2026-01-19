@@ -10,7 +10,8 @@ export const sendMail = async (to, subject, text) => {
       {
         sender: {
           name: "SkillSwap",
-          email: process.env.SENDER_EMAIL,
+          email: "skillswap.notify@gmail.com",
+          
         },
         to: [{ email: to }],
         subject,
