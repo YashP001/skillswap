@@ -3,10 +3,16 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+
+dotenv.config();
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   host: "smtp.gmail.com",
   port: 465,
+  secure: true, // ✅ THIS WAS MISSING
   auth: {
     user: process.env.EMAIL_ID,
     pass: process.env.APP_PASSWORD,
@@ -26,7 +32,7 @@ export const sendMail = async (to, subject, text) => {
     console.log("📩 Message ID:", info.messageId);
   } catch (error) {
     console.error("❌ Mail sending failed");
-    console.error(error.message);
+    console.error(error);
+    throw error; // important in production
   }
 };
-
