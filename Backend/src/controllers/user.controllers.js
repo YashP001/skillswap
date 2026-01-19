@@ -602,67 +602,48 @@ export const sendScheduleMeet = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Please provide all the details");
   }
 
-  // receiver (other user)
   const receiver = await User.findOne({ username });
   if (!receiver) {
     throw new ApiError(404, "User not found");
   }
 
-  // sender (logged-in user)
   const sender = req.user;
 
-  // real Google Meet link
   const meetLink = "https://meet.google.com/gky-nbwp-zih";
-
   const subject = "SkillSwap – Meeting Scheduled 🎉";
 
   const message = `
 Hello,
 
-
 A SkillSwap meeting has been scheduled successfully!
 
-
 👤 Participants:
-
 • ${sender.name}
-
 • ${receiver.name}
 
+📅 Date: ${date}
+⏰ Time: ${time}
 
-📅 Date:
-${date}
-
-
-⏰ Time:
-${time}
-
-
- Google Meet Link:
-
+🔗 Google Meet Link:
 ${meetLink}
 
-
-Please join the meeting on time.
-
-
-Happy Learning 
-
-
+Happy Learning 🚀
 SkillSwap Team
 `;
 
-  // send email to receiver
-  await sendMail(receiver.email, subject, message);
-
-  // send email to sender
-  await sendMail(sender.email, subject, message);
-
-  return res.status(200).json(
+  // ✅ SEND RESPONSE FIRST (IMPORTANT)
+  res.status(200).json(
     new ApiResponse(
       200,
       { meetLink },
-      "Meeting link sent successfully to both users"
+      "Meeting request sent successfully"
     )
   );
+
+  // ✅ SEND MAIL IN BACKGROUND (DO NOT await)
+  sendMail(receiver.email, subject, message)
+    .catch(err => console.error("Receiver mail failed:", err));
+
+  sendMail(sender.email, subject, message)
+    .catch(err => console.error("Sender mail failed:", err));
 });
