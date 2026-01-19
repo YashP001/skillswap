@@ -13,22 +13,20 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const sendMail = async (to, subject, Message) => {
-  const mailOptions = {
-    from: process.env.EMAIL_ID,
-    to: [to],
-    subject: subject,
-    html: Message,
-  };
-
+export const sendMail = async (to, subject, text) => {
   try {
-    await transporter.sendMail(mailOptions);
-    console.log("Email sent succesfully");
-    return true;
+    const info = await transporter.sendMail({
+      from: `"SkillSwap Team" <${process.env.EMAIL_ID}>`,
+      to,
+      subject,
+      text,
+    });
+
+    console.log("✅ Mail sent successfully");
+    console.log("📩 Message ID:", info.messageId);
   } catch (error) {
-    console.log("Error while sending  email", error);
-    return false;
+    console.error("❌ Mail sending failed");
+    console.error(error.message);
   }
 };
 
-export { sendMail };
