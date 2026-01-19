@@ -73,7 +73,11 @@ const Chats = () => {
     try {
       setChatLoading(true);
       const tempUser = JSON.parse(localStorage.getItem("userInfo"));
-      const { data } = await axios.get("http://localhost:8000/chat");
+      const { data } = await axios.get(
+        "https://skillswap-ab0o.onrender.com/chat",
+       { withCredentials: true }
+       );
+
       // console.log("Chats", data.data);
       toast.success(data.message);
       if (tempUser?._id) {
@@ -113,7 +117,11 @@ const Chats = () => {
   const handleChatClick = async (chatId) => {
     try {
       setChatMessageLoading(true);
-      const { data } = await axios.get(`http://localhost:8000/message/getMessages/${chatId}`);
+      const { data } = await axios.get(
+      `https://skillswap-ab0o.onrender.com/message/getMessages/${chatId}`,
+      { withCredentials: true }
+     );
+
       setChatMessages(data.data);
       // console.log("Chat Messages:", data.data);
       setMessage("");
