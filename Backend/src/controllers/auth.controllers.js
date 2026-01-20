@@ -58,7 +58,7 @@ export const handleGoogleLoginCallback = asyncHandler(async (req, res) => {
       httpOnly: true,
       expires: expiryDate,
       secure: true,
-      sameSite: "none",
+      sameSite: "lax",
     });
 
     return res.redirect(isMobile ? MOBILE_SUCCESS : `${FRONTEND_URL}/discover`);
@@ -82,7 +82,7 @@ export const handleGoogleLoginCallback = asyncHandler(async (req, res) => {
     httpOnly: true,
     expires: expiryDate,
     secure: true,
-    sameSite: "none",
+    sameSite: "lax",
   });
 
   return res.redirect(isMobile ? MOBILE_REGISTER : `${FRONTEND_URL}/register`);
@@ -95,12 +95,12 @@ export const handleLogout = (req, res) => {
 
   res.clearCookie("accessToken", {
     secure: true,
-    sameSite: "none",
+    sameSite: "lax",
   });
 
   res.clearCookie("accessTokenRegistration", {
     secure: true,
-    sameSite: "none",
+    sameSite: "lax",
   });
 
   return res.status(200).json(
