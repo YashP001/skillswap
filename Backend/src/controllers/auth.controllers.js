@@ -10,8 +10,6 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 dotenv.config();
 
 const FRONTEND_URL = "https://skillswap-rosy.vercel.app";
-const MOBILE_SUCCESS = "skillswap://login-success";
-const MOBILE_REGISTER = "skillswap://register";
 
 /* ---------------- GOOGLE STRATEGY ---------------- */
 
@@ -45,7 +43,6 @@ export const handleGoogleLoginCallback = asyncHandler(async (req, res) => {
   console.log("\n******** Inside handleGoogleLoginCallback ********");
 
   const email = req.user._json.email;
-  const isMobile = req.headers["user-agent"]?.includes("Android");
 
   /* ---------- REGISTERED USER ---------- */
   const existingUser = await User.findOne({ email });
@@ -57,11 +54,11 @@ export const handleGoogleLoginCallback = asyncHandler(async (req, res) => {
     res.cookie("accessToken", jwtToken, {
       httpOnly: true,
       expires: expiryDate,
-      secure: true,
-      sameSite: "lax",
+      secure: true,        // REQUIRED on HTTPS
+      sameSite: "none",    // REQUIRED for cross-site cookies
     });
 
-    return res.redirect(isMobile ? MOBILE_SUCCESS : `${FRONTEND_URL}/discover`);
+    return res.redirect(`${FRONTEND_URL}/discover`);
   }
 
   /* ---------- UNREGISTERED USER ---------- */
@@ -82,10 +79,10 @@ export const handleGoogleLoginCallback = asyncHandler(async (req, res) => {
     httpOnly: true,
     expires: expiryDate,
     secure: true,
-    sameSite: "lax",
+    sameSite: "none",
   });
 
-  return res.redirect(isMobile ? MOBILE_REGISTER : `${FRONTEND_URL}/register`);
+  return res.redirect(`${FRONTEND_URL}/register`);
 });
 
 /* ---------------- LOGOUT ---------------- */
@@ -95,12 +92,12 @@ export const handleLogout = (req, res) => {
 
   res.clearCookie("accessToken", {
     secure: true,
-    sameSite: "lax",
+    sameSite: "none",
   });
 
   res.clearCookie("accessTokenRegistration", {
     secure: true,
-    sameSite: "lax",
+    sameSite: "none",
   });
 
   return res.status(200).json(
