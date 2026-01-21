@@ -609,7 +609,7 @@ export const sendScheduleMeet = asyncHandler(async (req, res) => {
 
   const sender = req.user;
 
-  const meetLink = "https://meet.google.com/gky-nbwp-zih";
+  const meetLink = process.env.MEET_LINK;
   const subject = "SkillSwap – Meeting Scheduled 🎉";
 
   const message = `
