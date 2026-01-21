@@ -618,8 +618,8 @@ Hello,
 A SkillSwap meeting has been scheduled successfully!
 
 👤 Participants:
-• ${sender.name}
-• ${receiver.name}
+• ${sender.name} (${sender.email})
+• ${receiver.name} (${receiver.email})
 
 📅 Date: ${date}
 ⏰ Time: ${time}
@@ -627,7 +627,9 @@ A SkillSwap meeting has been scheduled successfully!
 🔗 Google Meet Link:
 ${meetLink}
 
-Happy Learning 🚀
+Please join the meeting on time.
+
+Happy Learning,
 SkillSwap Team
 `;
 
