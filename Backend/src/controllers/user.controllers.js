@@ -184,6 +184,7 @@ export const registerUser = async (req, res) => {
     name,
     email,
     username,
+    dob,
     linkedinLink,
     githubLink,
     portfolioLink,
@@ -197,6 +198,9 @@ export const registerUser = async (req, res) => {
   if (!name || !email || !username || skillsProficientAt.length === 0 || skillsToLearn.length === 0) {
     throw new ApiError(400, "Please provide all the details");
   }
+  if (!dob) {
+  throw new ApiError(400, "Date of Birth is required");
+}
   if (!email.match(/^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/)) {
     throw new ApiError(400, "Please provide valid email");
   }
@@ -264,6 +268,7 @@ export const registerUser = async (req, res) => {
     name: name,
     email: email,
     username: username,
+    dob: dob,
     linkedinLink: linkedinLink,
     githubLink: githubLink,
     portfolioLink: portfolioLink,
